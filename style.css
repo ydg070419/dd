@@ -1,0 +1,909 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    display: flex;
+    height: 100vh;
+    background-color: #f4f7f6;
+    color: #222;
+}
+
+/* 사이드바 UI 스타일 */
+.sidebar {
+    width: 490px;
+    min-width: 490px;
+    background: white;
+    padding: 22px;
+    box-shadow: 2px 0 16px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+    z-index: 10;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+h1 {
+    font-size: 22px;
+    color: #1e293b;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tag-badge {
+    background: #fee500;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+    color: #191919;
+}
+
+.desc {
+    font-size: 12.5px;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+/* 스텝 뷰 전환 스타일 */
+.step-view {
+    display: none;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+}
+
+.step-view.active {
+    display: flex;
+}
+
+.step-guide {
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 12.5px;
+    color: #475569;
+    line-height: 1.45;
+}
+
+.step-guide b {
+    color: #1e293b;
+    font-size: 13.5px;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.section-label {
+    font-weight: 700;
+    font-size: 13.5px;
+    color: #334155;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.input-sub-label {
+    font-size: 11.5px;
+    color: #64748b;
+    display: block;
+    font-weight: 600;
+}
+
+/* 모임 장소 결정 방식 선택 카드 */
+.mode-select-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mode-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.mode-card:hover {
+    border-color: #93c5fd;
+    background: #f0f7ff;
+}
+
+.mode-card.active {
+    border-color: #3b82f6;
+    background: #eff6ff;
+}
+
+.mode-card input[type="radio"] {
+    width: auto;
+    margin-top: 3px;
+    cursor: pointer;
+}
+
+.mode-card b {
+    font-size: 13px;
+    color: #1e293b;
+    display: block;
+}
+
+.mode-card p {
+    font-size: 11.5px;
+    color: #64748b;
+    margin-top: 2px;
+    line-height: 1.35;
+}
+
+.fixed-place-input-box {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-top: 4px;
+}
+
+/* 시간 설정 영역 */
+.time-setting-block {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+    padding: 9px 12px;
+}
+
+.time-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.check-label {
+    font-size: 11.5px;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.check-label input {
+    width: auto;
+    cursor: pointer;
+}
+
+.input-group {
+    display: flex;
+    gap: 6px;
+    position: relative;
+}
+
+input, select {
+    padding: 9px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+}
+
+input:focus, select:focus {
+    border-color: #3b82f6;
+}
+
+input:disabled {
+    background: #f1f5f9;
+    color: #94a3b8;
+    cursor: not-allowed;
+}
+
+button.btn-primary {
+    padding: 9px 14px;
+    background: #fee500;
+    border: none;
+    border-radius: 7px;
+    font-weight: 700;
+    cursor: pointer;
+    color: #191919;
+    transition: all 0.2s;
+    font-size: 13px;
+}
+
+button.btn-primary:hover {
+    background: #fadd00;
+    transform: translateY(-1px);
+}
+
+button.btn-dark {
+    background: #1e293b;
+    color: white;
+    border: none;
+    border-radius: 7px;
+    font-weight: 700;
+    padding: 11px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+button.btn-dark:hover {
+    background: #0f172a;
+}
+
+button.btn-dark:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+}
+
+.notice-text {
+    font-size: 11.5px;
+    color: #94a3b8;
+    text-align: center;
+    margin-top: 4px;
+}
+
+/* [Step 2] 모임 요약 카드 & 공유 링크 */
+.room-info-card {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 9px;
+    padding: 13px 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.room-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.room-info-header h3 {
+    font-size: 15px;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.btn-text-edit {
+    background: none;
+    border: none;
+    color: #3b82f6;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.room-info-meta {
+    font-size: 12px;
+    color: #475569;
+}
+
+.place-mode-badge {
+    background: #e2e8f0;
+    color: #334155;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    align-self: flex-start;
+}
+
+.share-box {
+    display: flex;
+    align-items: center;
+    background: white;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 6px 10px;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.share-url {
+    font-size: 11.5px;
+    color: #64748b;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+}
+
+.btn-copy {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 4px 10px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.btn-copy:hover {
+    background: #2563eb;
+}
+
+/* 자동완성 드롭다운 */
+.autocomplete-wrapper {
+    position: relative;
+    flex: 1.35;
+    display: flex;
+}
+
+.autocomplete-list {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    list-style: none;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 100;
+    display: none;
+}
+
+.autocomplete-item {
+    padding: 8px 12px;
+    border-bottom: 1px solid #f1f5f9;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+.autocomplete-item:hover {
+    background: #f8fafc;
+}
+
+.autocomplete-item-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.autocomplete-item-address {
+    font-size: 11px;
+    color: #64748b;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* 참여자 리스트 */
+.participant-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 140px;
+    overflow-y: auto;
+}
+
+.participant-item {
+    background: #f8fafc;
+    padding: 8px 12px;
+    border-radius: 7px;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12.5px;
+}
+
+.participant-item span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 280px;
+}
+
+.btn-delete {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 3px 8px;
+    font-size: 11px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-delete:hover {
+    background: #dc2626;
+}
+
+/* [Step 3] 최종 결과 스타일 */
+.result-nav-header {
+    display: flex;
+    margin-bottom: 4px;
+}
+
+.btn-back {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #334155;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.btn-back:hover {
+    background: #e2e8f0;
+}
+
+.change-place-box {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+
+.change-place-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1d4ed8;
+    display: block;
+}
+
+.result-content-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.midpoint-header {
+    background: #e0f2fe;
+    border-left: 4px solid #0284c7;
+    padding: 12px 14px;
+    border-radius: 6px;
+}
+
+.midpoint-header h3 {
+    font-size: 15px;
+    color: #0369a1;
+    font-weight: 800;
+    margin-bottom: 3px;
+}
+
+.midpoint-address {
+    font-size: 12px;
+    color: #0284c7;
+}
+
+.subway-rank-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.subway-rank-item {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+    padding: 9px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.15s;
+}
+
+.subway-rank-item:hover {
+    border-color: #3b82f6;
+    background: #eff6ff;
+}
+
+.subway-badge {
+    background: #3b82f6;
+    color: white;
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-right: 6px;
+}
+
+.btn-select-place {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+
+.btn-select-place:hover {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+
+/* ============================================== */
+/* 📱 네이버 지도 스타일 상세 대중교통 경로 카드 */
+/* ============================================== */
+.route-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.route-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-name-tag {
+    font-size: 14px;
+    font-weight: 800;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.user-address-sub {
+    font-size: 11.5px;
+    font-weight: normal;
+    color: #64748b;
+}
+
+.route-btn {
+    background: #fee500;
+    text-decoration: none;
+    color: #191919;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.route-btn:hover {
+    background: #f5dc00;
+}
+
+/* 네이버 지도 스타일 대형 소요시간 & 요금 요약 */
+.route-summary-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 2px;
+}
+
+.route-best-badge {
+    color: #2563eb;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.route-total-time {
+    font-size: 26px;
+    font-weight: 900;
+    color: #0f172a;
+    letter-spacing: -0.5px;
+}
+
+.route-total-time span {
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.route-meta-info {
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* 🎯 네이버/카카오 형태 가로 타임라인 바 */
+.transit-timeline-container {
+    background: #e2e8f0;
+    border-radius: 20px;
+    padding: 3px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    width: 100%;
+    margin: 8px 0;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.transit-bar-segment {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 4px 6px;
+    border-radius: 14px;
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 28px;
+    box-sizing: border-box;
+}
+
+/* 🎨 서울교통공사, 국토부 광역교통표준, 서울/경기 버스 표준 가이드라인 색상 */
+.segment-walk { background: #8c949e; color: white; } /* 도보: 표준 그레이 */
+.segment-bluebus, .segment-bus { background: #0068b7; } /* 서울 간선버스: #0068b7 (파랑) */
+.segment-greenbus { background: #37b24d; } /* 서울 지선 / 경기 시내버스: #37b24d (초록) */
+.segment-redbus { background: #e61919; } /* 국토부 광역급행(M버스) / 경기 직행좌석: #e61919 (빨강) */
+.segment-yellowbus { background: #f59f00; } /* 마을/순환버스: #f59f00 (황색) */
+
+/* 수도권 전철/지하철 호선별 공식 표준 색상 (서울교통공사 및 한국철도공사) */
+.segment-subway { background: #00A84D; } /* 기본 지하철 (2호선 그린) */
+.segment-subway-1 { background: #0052A4; } /* 1호선 */
+.segment-subway-2 { background: #00A84D; } /* 2호선 */
+.segment-subway-3 { background: #EF7C1C; } /* 3호선 */
+.segment-subway-4 { background: #00A5DE; } /* 4호선 */
+.segment-subway-5 { background: #996CAC; } /* 5호선 */
+.segment-subway-6 { background: #CD7C2F; } /* 6호선 */
+.segment-subway-7 { background: #747F00; } /* 7호선 */
+.segment-subway-8 { background: #E6186C; } /* 8호선 */
+.segment-subway-9 { background: #BDB092; } /* 9호선 */
+.segment-subway-shinbundang { background: #D4003B; } /* 신분당선 */
+.segment-subway-suin { background: #F5A200; } /* 수인분당선 */
+.segment-subway-gyeongui { background: #77C4A3; } /* 경의중앙선 */
+.segment-subway-gyeongchun { background: #0C8E72; } /* 경춘선 */
+.segment-subway-airport { background: #0090D2; } /* 공항철도 */
+.segment-train-ktx { background: #003865; } /* KTX 고속열차 */
+.segment-train-srt { background: #6A1B9A; } /* SRT 고속열차 */
+
+/* 🎯 네이버 지도 스타일 세로 타임라인 상세 경로 (Step-by-Step) */
+.vertical-timeline {
+    position: relative;
+    padding-left: 24px;
+    margin: 10px 0 6px 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* 세로 가이드 연결선 */
+.vertical-timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    bottom: 10px;
+    width: 2px;
+    background: #cbd5e1;
+}
+
+.v-step-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* 각 정류장/역 앞의 원형 도트 */
+.v-step-dot {
+    position: absolute;
+    left: -22px;
+    top: 3px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid #3b82f6;
+    box-sizing: border-box;
+}
+
+.v-step-dot.blue { border-color: #0068b7; }
+.v-step-dot.green { border-color: #37b24d; }
+.v-step-dot.red { border-color: #e61919; }
+.v-step-dot.subway { border-color: #00A84D; }
+.v-step-dot.train { border-color: #003865; }
+.v-step-dot.walk { border-color: #8c949e; }
+.v-step-dot.end { border-color: #64748b; background: #64748b; }
+
+.v-step-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e293b;
+    flex-wrap: wrap;
+}
+
+.v-transit-badge {
+    font-size: 10.5px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.v-badge-blue { background: #0068b7; }
+.v-badge-green { background: #37b24d; }
+.v-badge-red { background: #e61919; }
+.v-badge-subway { background: #00A84D; }
+.v-badge-train { background: #003865; }
+.v-badge-srt { background: #6A1B9A; }
+.v-badge-walk { background: #8c949e; }
+
+.v-info-tag {
+    font-size: 10px;
+    color: #64748b;
+    border: 1px solid #cbd5e1;
+    padding: 1px 5px;
+    border-radius: 10px;
+    font-weight: normal;
+}
+
+.v-step-sub {
+    font-size: 12px;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 2px;
+    flex-wrap: wrap;
+}
+
+/* 버스 번호 테두리 박스 (예: [1200], [320], [2016]) */
+.v-line-box {
+    border: 1.5px solid #e61919;
+    color: #e61919;
+    font-weight: 800;
+    font-size: 11px;
+    padding: 1.5px 5px;
+    border-radius: 4px;
+    background: #fef2f2;
+}
+
+.v-line-box.blue {
+    border-color: #0068b7;
+    color: #0068b7;
+    background: #eff6ff;
+}
+
+.v-line-box.green {
+    border-color: #37b24d;
+    color: #2b8a3e;
+    background: #ebfbee;
+}
+
+.v-line-box.subway {
+    border-color: #00A84D;
+    color: #00A84D;
+    background: #f0fdf4;
+}
+
+.v-line-box.train {
+    border-color: #003865;
+    color: #003865;
+    background: #f0f4f8;
+}
+
+.v-step-desc {
+    font-size: 11.5px;
+    color: #64748b;
+    margin-left: 2px;
+}
+
+/* 막차 및 안심 귀가 영역 */
+.last-train-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 8px;
+    border-top: 1px dashed #e2e8f0;
+}
+
+.safe-tag {
+    display: inline-block;
+    padding: 2.5px 7px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.safe-green { background: #dcfce7; color: #15803d; }
+.safe-yellow { background: #fef9c3; color: #a16207; }
+.safe-red { background: #fee2e2; color: #b91c1c; }
+
+/* 추천 장소 리스트 */
+.place-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.place-item {
+    background: white;
+    padding: 9px 12px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.place-item a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 12.5px;
+}
+
+/* 지도 영역 */
+#map {
+    flex: 1;
+    height: 100%;
+    position: relative;
+}
+
+.map-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: white;
+    padding: 8px 14px;
+    border-radius: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+    font-size: 12px;
+    font-weight: 700;
+    z-index: 5;
+}

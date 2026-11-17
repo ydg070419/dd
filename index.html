@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeetPoint - 대학생 맞춤형 모임 장소 및 막차 케어</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- 사이드바 컨트롤러 -->
+    <div class="sidebar">
+        <!-- 상단 헤더 -->
+        <div>
+            <div class="header-title">
+                <h1 onclick="resetToStep1()" style="cursor: pointer;">📍 MeetPoint</h1>
+                <span class="tag-badge">대학생 모임 케어</span>
+            </div>
+            <p class="desc">가장 공평한 중간역과 안심 귀가 막차 시간 추천</p>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- [Step 1] 모임 방 생성 화면 -->
+        <!-- ============================================== -->
+        <div id="step1" class="step-view active">
+            <div class="step-guide">
+                <b>새로운 약속 방 만들기</b>
+                <p>약속 장소 결정 방식과 일정을 입력하고 약속 방을 만드세요.</p>
+            </div>
+
+            <!-- 1. 장소 결정 방식 옵션 선택 (신규) -->
+            <div class="section">
+                <label class="section-label">📍 모임 장소 결정 방식</label>
+                <div class="mode-select-group">
+                    <label class="mode-card active" id="modeCardRecommend" onclick="selectPlaceMode('recommend')">
+                        <input type="radio" name="placeMode" value="recommend" checked>
+                        <div>
+                            <b>⚖️ 최적 장소 추천받기</b>
+                            <p>참여자들의 <b>집/학교 (출발지)</b>를 모아 공평한 중간 장소를 찾습니다.</p>
+                        </div>
+                    </label>
+                    <label class="mode-card" id="modeCardFixed" onclick="selectPlaceMode('fixed')">
+                        <input type="radio" name="placeMode" value="fixed">
+                        <div>
+                            <b>🎯 모임 장소 직접 정하기</b>
+                            <p>약속 장소를 미리 정하고, 모임 후 각자의 <b>집 (목적지)</b>까지의 귀가 막차를 계산합니다.</p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- 직접 정하기 선택 시 노출되는 장소 검색창 -->
+                <div id="fixedPlaceBox" class="fixed-place-input-box" style="display: none;">
+                    <span class="input-sub-label">정해진 약속 장소 입력</span>
+                    <div class="autocomplete-wrapper">
+                        <input type="text" id="fixedPlaceInput" placeholder="약속 장소 검색 (예: 건대입구역, 강남역)" autocomplete="off">
+                        <ul id="fixedPlaceAutocompleteList" class="autocomplete-list"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 모임 이름 -->
+            <div class="section">
+                <label class="section-label">📌 모임 이름</label>
+                <input type="text" id="roomTitle" placeholder="예: SW와 AI 3조 과제 모임" value="SW와 AI 조별과제 모임">
+            </div>
+
+            <!-- 3. 약속 날짜 -->
+            <div class="section">
+                <label class="section-label">📅 약속 날짜</label>
+                <input type="date" id="roomDate">
+            </div>
+
+            <!-- 4. 시간 설정 영역 -->
+            <div class="section">
+                <label class="section-label">⏰ 모임 시간 설정</label>
+                
+                <div class="time-setting-block">
+                    <div class="time-header-row">
+                        <span class="input-sub-label">시작 시각</span>
+                        <label class="check-label">
+                            <input type="checkbox" id="noStartTime" checked onchange="toggleTimeInput('appointmentTime', this)"> 시간 설정 안 함
+                        </label>
+                    </div>
+                    <input type="time" id="appointmentTime" value="18:00" disabled>
+                </div>
+
+                <div class="time-setting-block" style="margin-top: 6px;">
+                    <div class="time-header-row">
+                        <span class="input-sub-label">예상 해산 시각</span>
+                        <label class="check-label">
+                            <input type="checkbox" id="noEndTime" checked onchange="toggleTimeInput('endTime', this)"> 시간 설정 안 함
+                        </label>
+                    </div>
+                    <input type="time" id="endTime" value="22:30" disabled>
+                </div>
+            </div>
+
+            <button class="btn-dark" style="margin-top: 10px;" onclick="createRoom()">🚀 약속 방 만들기</button>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- [Step 2] 참여자 입력 및 대기 화면 -->
+        <!-- ============================================== -->
+        <div id="step2" class="step-view">
+            <!-- 모임 요약 정보 카드 -->
+            <div class="room-info-card">
+                <div class="room-info-header">
+                    <h3 id="displayRoomTitle">모임 이름</h3>
+                    <button class="btn-text-edit" onclick="goToStep1()">수정</button>
+                </div>
+                <div class="room-info-meta" id="displayRoomMeta">일시 및 시간</div>
+                <div id="displayPlaceModeBadge" class="place-mode-badge">모드 안내</div>
+                
+                <!-- 카톡 공유 링크 복사 바 -->
+                <div class="share-box">
+                    <span id="shareUrlText" class="share-url">초대 링크 생성됨</span>
+                    <button class="btn-copy" onclick="copyShareLink()">링크 복사</button>
+                </div>
+            </div>
+
+            <!-- 참여자 위치 등록 (모드에 따라 집(출발지) vs 집(목적지) 동적 전환) -->
+            <div class="section">
+                <label class="section-label" id="participantInputLabel">🚶‍♂️ 내 위치 / 집 (출발지) 등록하기</label>
+                <div class="input-group">
+                    <input type="text" id="userName" placeholder="이름 (예: 민수)" style="flex: 0.65;">
+                    <div class="autocomplete-wrapper">
+                        <input type="text" id="userAddress" placeholder="출발역 또는 주소 (집/학교)" autocomplete="off" onkeypress="if(event.key==='Enter') addParticipant()">
+                        <ul id="autocompleteList" class="autocomplete-list"></ul>
+                    </div>
+                </div>
+                <button class="btn-primary" id="btnRegisterParticipant" onclick="addParticipant()">내 위치 등록</button>
+            </div>
+
+            <!-- 참여자 목록 -->
+            <div class="section">
+                <div class="section-label">
+                    <span id="participantListTitle">참여한 친구들의 출발지</span>
+                    <span style="color: #3b82f6;"><span id="participantCount">0</span>명 참여 중</span>
+                </div>
+                <ul id="participantList" class="participant-list"></ul>
+            </div>
+
+            <!-- 추천 카테고리 선택 (정확한 6가지 카테고리로 수정 완료) -->
+            <div class="section" id="categorySection" style="margin-top: auto;">
+                <label class="section-label">🎯 맞춤 장소 카테고리</label>
+                <div class="input-group">
+                    <select id="categorySelect">
+                        <option value="SW8">지하철역</option>
+                        <option value="BUS">버스정류장</option>
+                        <option value="CINEMA">영화관</option>
+                        <option value="PUB">유흥가 및 번화가</option>
+                        <option value="SHOP">백화점 및 쇼핑몰</option>
+                        <option value="LIB">도서관</option>
+                    </select>
+                    <input type="text" id="customKeyword" placeholder="직접 검색 (예: 보드게임)" style="flex: 1.1;">
+                </div>
+            </div>
+
+            <!-- 계산 실행 버튼 -->
+            <button id="btnCalculate" class="btn-dark" onclick="calculateMidpoint()">
+                ✨ 최적 중간역 및 막차 산출하기
+            </button>
+            <p id="calculateNotice" class="notice-text">친구를 2명 이상 등록하면 산출할 수 있습니다.</p>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- [Step 3] 최종 결과 화면 (중간역 추천 + 막차 케어 + 장소 변경) -->
+        <!-- ============================================== -->
+        <div id="step3" class="step-view">
+            <div class="result-nav-header">
+                <button class="btn-back" onclick="goToStep2()">⬅️ 참여자 다시 수정하기</button>
+            </div>
+
+            <!-- 약속 장소 자유 변경 검색 바 -->
+            <div class="change-place-box">
+                <span class="change-place-title">🎯 약속 장소를 다른 곳으로 바꾸고 싶다면?</span>
+                <div class="input-group" style="margin-top: 5px;">
+                    <div class="autocomplete-wrapper" style="flex: 1;">
+                        <input type="text" id="customDestInput" placeholder="장소 직접 검색 (예: 건대입구, 강남 CGV)" autocomplete="off" onkeypress="if(event.key==='Enter') searchAndChangeTarget()">
+                        <ul id="customDestAutocompleteList" class="autocomplete-list"></ul>
+                    </div>
+                    <button class="btn-primary" style="padding: 8px 12px; font-size: 12px; white-space: nowrap;" onclick="searchAndChangeTarget()">
+                        이 장소로 재계산
+                    </button>
+                </div>
+            </div>
+
+            <!-- 결과 컨테이너 -->
+            <div id="resultContent" class="result-content-wrap"></div>
+        </div>
+    </div>
+
+    <!-- 지도 표시 영역 -->
+    <div id="map">
+        <div class="map-badge">🗺️ MeetPoint 실시간 지도</div>
+    </div>
+
+    <!-- 카카오 맵 SDK -->
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c0ea1d196aa3f697d6a1fc9d7c2648aa&libraries=services"></script>
+
+    <!-- Firebase 실시간 DB SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <script src="app.js"></script>
+</body>
+</html>
